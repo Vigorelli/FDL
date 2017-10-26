@@ -41,6 +41,7 @@ public:
 	
 	void step(float dt=0);
 	void project(float dt);
+	void addDensity(float dt);
 	void applyForces(float dt);
 	void advect(float dt);
 	void diffuse(float dt, float rate=0.25f);
@@ -49,10 +50,21 @@ public:
 	void setCGTolerance(float tol); 
 	void setCGMaxIter(unsigned N);
 	
+	void setSourceSize(fdl::Vector3f& );
+	void setSourcePos(fdl::Vector3f& );
+	void setSourceForce(fdl::Vector3f& );
+	bool checkSource(fdl::Vector3f&, fdl::Vector3f&);
+	
+	void setGravity(fdl::Vector3f&);
+
 	const Vector& getCurlMagnitude() const { return m_curlMagnitude; }
 	const Vector& getDivergence() const { return m_divergence; }
 	const Vector& getPressure() const { return m_pressure; }
-	
+    
+    float getDt() {return m_dt; }
+    float getTime() {return m_time; }
+	float getResidual() {return std::sqrt(m_tmp_residual); }
+    
 protected:
 	float computeMaxTimeStep() const;
 	void axpy_prod(const Vector& x, Vector& y) const;
@@ -90,7 +102,16 @@ private:
 	unsigned maxiter_cg;
 	
 	/* Gravity vector */
-	Vector3 m_gravity;
+	fdl::Vector3f m_gravity;
+
+	/* Source size */
+	fdl::Vector3f m_source_size;
+
+	/* Source position */
+	fdl::Vector3f m_source_pos;
+
+	/* Source initial force */
+	fdl::Vector3f m_source_force;
 
 	/* Grid resolution */
 	int m_gridX;
@@ -100,7 +121,10 @@ private:
 	int m_slice;
 	int m_velSlice;
 	float m_time;
+    float m_dt;
 	float m_dx;
+	
+	float m_tmp_residual;
 	
 	// performs 1D convolution in place
 	template<class T>

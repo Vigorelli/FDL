@@ -11,3 +11,15 @@
 *.lai
 *.la
 *.a
+
+# Build directory
+build/*
+
+#Desktop service files
+*.DS_Store
+
+#Data
+results/*
+
+
+
